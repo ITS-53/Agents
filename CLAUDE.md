@@ -38,6 +38,11 @@ des projets SI du cabinet. Tout est versionné dans Git pour être partagé et r
   rien inventer. Collecte interactive via la commande **/completer-cdc** (grill-me).
 - **cadrage-qa** (sous-agent) — contrôle cohérence/traçabilité de toute la chaîne (exigence →
   story → plan), détecte orphelins/contradictions, rend un avis **go/no-go**. Cmd : `/verifier-cadrage`.
+- **chiffrage** (sous-agent) — backlog → charge j-h, **TCO** (ponctuel + récurrent), planning par
+  sprints, roadmap + **GANTT Mermaid**, fourchette de sensibilité. Cmd : `/chiffrer`.
+- **github-project** (sous-agent) — **agit sur GitHub via `gh`** : crée un GitHub Project v2
+  (champs Statut/Priorité/Estimation/Epic/Sprint/dates), les issues epics+stories, et alimente
+  Kanban + Roadmap + Table. Idempotent. Nécessite le scope gh `project`. Cmd : `/publier-github-project`.
 
 - **/cadrer-projet `<cdc.docx>` `[--express]`** (commande **orchestratrice**) — déroule toute la
   chaîne d'un seul lancement : extraction → compréhension → backlog → architecture (grill-me) →

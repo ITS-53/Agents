@@ -52,7 +52,15 @@ Entrée : $ARGUMENTS
   les plans Must d'affilée.
 - Ignore les stories déjà planifiées (reprise).
 
+## Phase 4bis — Chiffrage (optionnel)
+Si je le souhaite (propose-le), délègue à l'agent **chiffrage** (entrée : `backlog/` + `comprehension.md`
++ `docs/`) → `projets/<slug>/chiffrage/chiffrage.md` (charge, TCO, planning, roadmap + GANTT Mermaid).
+
 ## Phase 5 — Récapitulatif
 Présente l'arborescence finale de `projets/<slug>/`, l'état de chaque phase, les hypothèses et
 lacunes bloquantes restantes (notamment RGPD/AIPD), et **affiche le `docs/PROMPT-DEMARRAGE.md`**
 prêt à coller dans une nouvelle session Claude Code pour démarrer l'implémentation.
+
+Propose enfin, en options séparées (actions réelles, sur demande) : un **audit RGPD**
+(`/audit-rgpd`), un **contrôle qualité** (`/verifier-cadrage`), la génération des **artefacts
+d'infra** (`/generer-infra`), et la **publication dans un GitHub Project** (`/publier-github-project`).
