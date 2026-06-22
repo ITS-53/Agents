@@ -29,6 +29,15 @@ des projets SI du cabinet. Tout est versionné dans Git pour être partagé et r
   détaillé (approche, impact BDD/API, front/back, sécurité, tâches, tests mappés aux critères,
   DoD), en se conformant à la doc d'architecture. Produit `plans/<ID>-plan.md`.
 - **/planifier-story `<ID>` `<backlog.md>` `[docs/]`** (commande) — lance `cdc-story-plan`.
+- **rgpd-dpo** (sous-agent) — audit RGPD/AIPD (cartographie données, base légale, conservation,
+  chiffrement, RLS, sous-traitance, droits) → note prête pour le DPO. Cmd : `/audit-rgpd`.
+- **infra-azure** (sous-agent) — génère les artefacts de déploiement (compose, nginx, CI, .env)
+  alignés sur Azure-Infra avec **allocation de ports sans collision** + projet de PR Azure-Infra.
+  Conception only. Cmd : `/generer-infra`.
+- **cdc-redacteur** (sous-agent) — complète un CDC incomplet à partir de réponses fournies, sans
+  rien inventer. Collecte interactive via la commande **/completer-cdc** (grill-me).
+- **cadrage-qa** (sous-agent) — contrôle cohérence/traçabilité de toute la chaîne (exigence →
+  story → plan), détecte orphelins/contradictions, rend un avis **go/no-go**. Cmd : `/verifier-cadrage`.
 
 - **/cadrer-projet `<cdc.docx>` `[--express]`** (commande **orchestratrice**) — déroule toute la
   chaîne d'un seul lancement : extraction → compréhension → backlog → architecture (grill-me) →
