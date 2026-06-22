@@ -43,6 +43,10 @@ des projets SI du cabinet. Tout est versionné dans Git pour être partagé et r
 - **github-project** (sous-agent) — **agit sur GitHub via `gh`** : crée un GitHub Project v2
   (champs Statut/Priorité/Estimation/Epic/Sprint/dates), les issues epics+stories, et alimente
   Kanban + Roadmap + Table. Idempotent. Nécessite le scope gh `project`. Cmd : `/publier-github-project`.
+- **aipd** (sous-agent) — rédige une **AIPD/DPIA complète** (méthodologie CNIL) depuis la note
+  `rgpd-dpo`. Cmd : `/generer-aipd`.
+- **comite-projet** (sous-agent) — **rapport de COPIL** (avancement depuis GitHub Project, budget
+  depuis chiffrage, risques, décisions). Cmd : `/rapport-copil`.
 
 - **/cadrer-projet `<cdc.docx>` `[--express]`** (commande **orchestratrice**) — déroule toute la
   chaîne d'un seul lancement : extraction → compréhension → backlog → architecture (grill-me) →

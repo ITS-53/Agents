@@ -72,9 +72,11 @@ Les livrables sont écrits **à la racine du repo courant** (`cadrage/`, `backlo
 | `/planifier-story` | cdc-story-plan | Une story → plan d'implémentation détaillé |
 | `/chiffrer` | chiffrage | Backlog → charge, TCO, planning, roadmap + GANTT Mermaid |
 | `/audit-rgpd` | rgpd-dpo | Audit RGPD/AIPD → note pour le DPO |
+| `/generer-aipd` | aipd | Rédige l'AIPD/DPIA complète (méthodologie CNIL) |
 | `/verifier-cadrage` | cadrage-qa | Cohérence/traçabilité de la chaîne → avis go/no-go |
 | `/generer-infra` | infra-azure | Artefacts de déploiement + ports sans collision (Azure-Infra) |
 | `/publier-github-project` | github-project | Crée/alimente un GitHub Project (Kanban + Roadmap) |
+| `/rapport-copil` | comite-projet | Rapport de comité de pilotage (avancement, budget, risques) |
 | `/cadrer-projet` | *(orchestrateur)* | Déroule toute la chaîne d'un seul lancement |
 
 ## Conventions
