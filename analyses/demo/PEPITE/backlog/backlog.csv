@@ -1,0 +1,35 @@
+ID,Type,Epic,Titre,UserStory,CriteresAcceptation,Priorite,Estimation,Dependances,Tracabilite,Statut
+EPIC-01,Epic,,Socle technique & sécurité,Fondations applicatives auth et déploiement,,Must,,,,A faire
+US-001,Story,EPIC-01,Scaffold du monorepo,"En tant qu'équipe technique je veux un monorepo structuré afin de démarrer sur des bases saines","Le scaffold web/api/shared compile lint et tests OK",Must,3,,docs/01-architecture,A faire
+US-002,Story,EPIC-01,Schéma BDD pepite + core + RLS,"En tant qu'équipe technique je veux le schéma pepite greffé avec RLS afin d'avoir un modèle cloisonné","Migrations jouées rôle pepite_app et policies RLS présents; un client ne voit que son client_id",Must,5,US-001,docs/02-modele-donnees ADR-0001,A faire
+US-003,Story,EPIC-01,Auth collaborateurs (Azure AD),"En tant que collaborateur je veux me connecter via Azure AD afin d'accéder sans nouveau mot de passe","JWT Supabase émis et rôle déduit du claim groups",Must,5,US-001 US-002,docs/04-securite-rgpd ADR-0002,A faire
+US-004,Story,EPIC-01,Auth clients (email + MFA),"En tant que client je veux un compte email avec MFA afin d'accéder de façon sécurisée","Email de confirmation via Graph et MFA TOTP obligatoire; refus sans 2e facteur",Must,5,US-002,§4.2 docs/04-securite-rgpd,A faire
+US-005,Story,EPIC-01,CI build/test,"En tant qu'équipe technique je veux un pipeline lint/test/build afin de garantir la qualité","Sur PR lint typecheck tests et build images réussissent",Should,3,US-001,docs/05-infrastructure-azure,A faire
+US-006,Story,EPIC-01,Conteneurisation & déploiement,"En tant qu'équipe technique je veux Dockerfiles et compose afin de déployer sous /opt/stacks/pepite","Services sur 127.0.0.1 aux ports cibles sans collision",Should,5,US-001,docs/05-infrastructure-azure,A faire
+EPIC-02,Epic,,Gestion des demandes de pièces,Missions checklists et demandes,,Must,,,,A faire
+US-007,Story,EPIC-02,Créer une mission,"En tant que collaborateur je veux créer une mission afin d'organiser la collecte","Mission enregistrée avec type exercice et portefeuille",Must,3,US-002 US-003,§2.2,A faire
+US-008,Story,EPIC-02,Paramétrer un template de checklist,"En tant que manager je veux définir les pièces attendues par type de mission afin de standardiser","Items libellé type obligatoire réutilisables",Must,5,US-002,EF-02,A faire
+US-009,Story,EPIC-02,Créer une demande depuis un template,"En tant que collaborateur je veux générer une demande depuis un template afin de lancer la collecte","Checklist instanciée avec date d'échéance",Must,3,US-008,EF-02 §2.2,A faire
+EPIC-03,Epic,,Dépôt & gestion des pièces,Dépôt client intégrité et validation,,Must,,,,A faire
+US-010,Story,EPIC-03,Déposer un fichier (client),"En tant que client je veux déposer mes pièces afin de répondre à la demande","Upload via URL signée vers Blob item passe à reçue; rejet si >25Mo ou type invalide",Must,8,US-002 US-004,EF-01 docs/03-api ADR-0003,A faire
+US-011,Story,EPIC-03,Intégrité & conservation probante,"En tant que cabinet je veux hash SHA-256 et stockage WORM afin de garantir l'inaltérabilité 10 ans","Hash enregistré et conteneur Blob en immutability",Must,5,US-010,§7 docs/04-securite-rgpd,A faire
+US-012,Story,EPIC-03,Valider ou refuser une pièce,"En tant que collaborateur je veux valider/refuser avec motif afin de garantir la conformité","Statut changé et action journalisée",Must,3,US-010,§2.2 §4.3,A faire
+US-013,Story,EPIC-03,Suivi de complétude,"En tant que collaborateur je veux voir l'avancement afin de savoir ce qui manque","Items reçus/validés/manquants et taux de complétude affichés",Must,3,US-009 US-012,§2.2,A faire
+US-014,Story,EPIC-03,Prévisualiser une pièce,"En tant que collaborateur je veux prévisualiser sans télécharger afin de gagner du temps","Aperçu via URL signée courte durée",Should,5,US-010,EF-04,A faire
+EPIC-04,Epic,,Relances & notifications,Notifications et relances,,Must,,,,A faire
+US-015,Story,EPIC-04,Notifier le client,"En tant que client je veux être notifié d'une demande afin de déposer à temps","Email avec lien envoyé via Graph à la publication",Must,3,US-009,§2.2,A faire
+US-016,Story,EPIC-04,Relances automatiques,"En tant que collaborateur je veux des relances auto afin de réduire les relances manuelles","Relance envoyée et tracée si incomplète et échue; aucune si complétée",Must,8,US-013 US-015,EF-03,A faire
+US-017,Story,EPIC-04,Relance manuelle,"En tant que collaborateur je veux relancer ponctuellement afin de gérer les cas particuliers","Email envoyé et tracé sur clic relancer",Should,2,US-016,§4.3,A faire
+EPIC-05,Epic,,Pilotage & export comptable,Tableau de bord et export,,Must,,,,A faire
+US-018,Story,EPIC-05,Tableau de bord portefeuille,"En tant que manager je veux une vue d'avancement afin de prioriser","Statut des demandes et retards affichés",Should,5,US-013,EF-05,A faire
+US-019,Story,EPIC-05,Export production comptable,"En tant que collaborateur je veux exporter pièces et métadonnées afin d'éviter la ressaisie","Transmission via API REST et état d'export tracé",Must,8,US-012 US-013,§1.3 §6.1,A faire
+US-020,Story,EPIC-05,Robustesse de l'export,"En tant que collaborateur je veux un rejeu en cas d'échec afin de fiabiliser","Rejeu automatique puis alerte après N tentatives",Should,3,US-019,docs/01-architecture,A faire
+EPIC-06,Epic,,Conformité RGPD & réversibilité,Audit conservation droits accessibilité,,Must,,,,A faire
+US-021,Story,EPIC-06,Piste d'audit,"En tant que cabinet je veux une piste d'audit append-only afin de retracer les actions","Entrée immuable acteur action entité horodatage dans audit_log",Must,5,US-002,§7 docs/04-securite-rgpd,A faire
+US-022,Story,EPIC-06,Conservation & purge,"En tant que DPO je veux des durées de conservation appliquées afin de respecter le RGPD","Purge/anonymisation des données échues et action tracée",Must,5,US-002,docs/04-securite-rgpd,A faire
+US-023,Story,EPIC-06,Export de réversibilité,"En tant que cabinet je veux exporter en formats ouverts afin de garantir la réversibilité","Export CSV/JSON et pièces ré-exportables",Should,3,US-002,§6.2,A faire
+US-024,Story,EPIC-06,Habilitations & matrice de droits,"En tant qu'administrateur je veux que chaque rôle n'accède qu'à son périmètre afin d'appliquer le moindre privilège","Guards et RLS conformes à la matrice; refus d'accès inter-clients",Must,5,US-002 US-003 US-004,§4.3,A faire
+US-025,Story,EPIC-06,Accessibilité RGAA AA,"En tant qu'utilisateur je veux une interface accessible afin de garantir l'inclusion","Écrans clés conformes RGAA/WCAG AA",Should,5,,§5.2,A faire
+US-026,Story,EPIC-06,AIPD RGPD avant prod,"En tant que DPO je veux une AIPD réalisée afin d'autoriser la mise en production","AIPD conduite validée et mesures intégrées",Must,2,,§4.2,Bloquee-par-lacune
+US-027,Story,EPIC-03,OCR type de pièce,"En tant que client je veux la reconnaissance auto du type afin de simplifier le dépôt","Type proposé automatiquement au dépôt",Could,8,US-010,EF-06,A faire
+US-028,Story,EPIC-03,Signature électronique,"En tant que client je veux signer électroniquement les documents","Hors périmètre v1",Won't,,,EF-07,Exclu-v1
