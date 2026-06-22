@@ -7,7 +7,7 @@ Tu vas m'aider à compléter le cahier des charges fourni : $ARGUMENTS
 
 ## Phase 1 — Identifier les lacunes
 1. Si l'entrée est un `.docx`, convertis-la d'abord en Markdown (script global) :
-   `pwsh "C:\Users\CorentynHAYER\.claude\scripts\Convert-Docx.ps1" -Path "<cdc>" -OutFile "cadrage/cdc-source.md"`.
+   `pwsh ./scripts/Convert-Docx.ps1 -Path "<cdc>" -OutFile "cadrage/cdc-source.md"`.
 2. Repère toutes les lacunes : champs `[ À compléter ]`, vides, ou « Sans objet » non justifiés.
    Si une compréhension `cdc-analyst` (carte des lacunes) est fournie, sers-t'en pour prioriser.
 

@@ -1,10 +1,11 @@
 ---
-description: "Orchestre toute la chaîne de cadrage : CDC -> compréhension -> backlog -> architecture (grill-me) -> plans par story. Reprenable au fil du temps."
+description: "Orchestre toute la chaîne de cadrage dans le repo courant : CDC -> compréhension -> backlog -> architecture (grill-me) -> plans par story. Reprenable."
 argument-hint: <chemin CDC .docx ou .md> [--express]
 ---
 
 Tu es le **chef d'orchestre du cadrage projet**. À partir du cahier des charges fourni, tu
-déroules toute la chaîne d'agents, en t'arrêtant uniquement aux points de décision humaine.
+déroules toute la chaîne d'agents **dans le dépôt courant**, en t'arrêtant uniquement aux points
+de décision humaine.
 
 Entrée : $ARGUMENTS
 - 1er argument = chemin du CDC (`.docx` ou `.md`).
@@ -13,54 +14,60 @@ Entrée : $ARGUMENTS
   décisions structurantes — BDD, auth, stockage — ont besoin de toi). Sans `--express`, mode
   **guidé** : une validation à chaque phase.
 
-## Règles transverses
-- **Reprenable** : avant chaque phase, vérifie si le livrable existe déjà dans `projets/<slug>/`.
-  S'il existe, propose de le réutiliser (défaut) ou de le régénérer. Ne refais jamais en double sans demander.
-- **Conception uniquement** : aucune manipulation réelle des VMs/infra (cf. CLAUDE.md).
-- À chaque phase, **délègue au sous-agent dédié** (via la tâche), avec des chemins de sortie explicites.
-- Tiens-moi informé : annonce chaque phase qui démarre et résume chaque livrable produit.
+## Règles transverses (impératives)
+- **Conception uniquement** : aucune manipulation réelle des VMs/infrastructure (pas de
+  déploiement, migration, ou commande modifiant l'infra). Lecture seule de `gh`/Azure-Infra OK.
+- **Livrables à la racine du repo courant** (pour que l'implémentation démarre dans le même repo) :
+  `cadrage/` (cdc-extrait + compréhension), `backlog/`, `docs/` (+ `PROMPT-DEMARRAGE.md`), `plans/`.
+- **Reprenable** : avant chaque phase, vérifie si le livrable existe déjà. S'il existe, propose de
+  le réutiliser (défaut) ou de le régénérer. Ne refais jamais en double sans demander.
+- À chaque phase, **délègue au sous-agent dédié** avec des chemins de sortie explicites, et résume le livrable.
 
 ## Phase 0 — Initialisation
 1. Si le CDC est un `.docx`, convertis-le :
-   `pwsh ./scripts/Convert-Docx.ps1 -Path "<cdc>" -OutFile "projets/<slug>/cdc-extrait.md"`.
-2. Détermine un **slug** de projet (code projet ou nom normalisé, ex. `pepite`). Crée le dossier
-   `projets/<slug>/`. Tous les livrables y vivront.
+   `pwsh ./scripts/Convert-Docx.ps1 -Path "<cdc>" -OutFile "cadrage/cdc-extrait.md"`.
+   Sinon, copie/lis le `.md` source.
+2. Crée les dossiers `cadrage/`, `backlog/`, `docs/`, `plans/` à la racine si absents.
 
 ## Phase 1 — Compréhension (agent cdc-analyst)
-- Délègue à **cdc-analyst** → écrit `projets/<slug>/comprehension.md`.
+- Délègue à **cdc-analyst** → écrit `cadrage/comprehension.md`.
 - **Gate** : présente la synthèse exécutive + les 3 questions critiques. En mode guidé,
-  demande « on continue ? ». En `--express`, enchaîne directement.
+  demande « on continue ? ». En `--express`, enchaîne.
 
 ## Phase 2 — Backlog (agent cdc-backlog)
-- Délègue à **cdc-backlog** (entrée : `comprehension.md`) → écrit `projets/<slug>/backlog/backlog.md` + `backlog.csv`.
-- **Gate** : présente la synthèse chiffrée + le périmètre MVP. En mode guidé, demande validation
-  (le périmètre MVP est important car il pilote la Phase 4). En `--express`, enchaîne.
+- Délègue à **cdc-backlog** (entrée : `cadrage/comprehension.md`) → écrit
+  `backlog/backlog.md` + `backlog/backlog.csv`.
+- **Gate** : présente la synthèse chiffrée + le périmètre MVP (il pilote la Phase 4). En mode
+  guidé, demande validation. En `--express`, enchaîne.
 
-## Phase 3 — Architecture (commande grill-me + agent cdc-architecte)
-- **Déroule le grill-me** exactement comme `/proposer-archi` (lis d'abord le repo Azure-Infra
-  `ITS-53/Azure-Infra` pour les ports/conventions), pose-moi les questions, **attends mes
-  réponses**, puis demande « on génère ? ». ⚠️ Cette phase est **toujours interactive**.
-- Une fois validé, délègue à **cdc-architecte** → écrit `projets/<slug>/docs/` (vue d'ensemble,
-  architecture, modèle de données, API, sécurité/RGPD, infra, ADR) + `docs/PROMPT-DEMARRAGE.md`
-  (qui impose la discipline story → plan → code et référence le backlog).
+## Phase 3 — Architecture (grill-me + agent cdc-architecte)
+- **Déroule le grill-me** : lis d'abord le repo **`ITS-53/Azure-Infra`** via `gh` (ports par
+  tranches, conventions BDD/Supabase, tout sur `127.0.0.1`, nginx seul public), puis pose-moi
+  les questions structurantes (BDD : PostgreSQL isolé vs Supabase greffé ; back Node ; auth ;
+  stockage ; environnements ; CI/CD ; valeurs NFR manquantes). **Attends mes réponses**, puis
+  demande « on génère ? ». ⚠️ Cette phase est **toujours interactive**.
+- Une fois validé, délègue à **cdc-architecte** → écrit `docs/` (vue d'ensemble, architecture,
+  modèle de données, API, sécurité/RGPD, infra, ADR) + `docs/PROMPT-DEMARRAGE.md` (qui impose la
+  discipline story → plan → code et référence `backlog/backlog.md`).
 
 ## Phase 4 — Plans d'implémentation (agent cdc-story-plan)
 - Pour **chaque user story Must (MVP)** du backlog, **dans l'ordre des dépendances**, délègue à
-  **cdc-story-plan** (entrée : la story + `backlog.md` + `docs/`) → écrit `projets/<slug>/plans/<US-id>-plan.md`.
-- Annonce la progression (« plan 3/18 … »). En mode guidé, propose une **pause toutes les N
-  stories** ou un point de validation par story si je le demande ; en `--express`, génère tous
-  les plans Must d'affilée.
+  **cdc-story-plan** (entrée : la story + `backlog/backlog.md` + `docs/`) → écrit `plans/<US-id>-plan.md`.
+- Annonce la progression (« plan 3/18 … »). En mode guidé, propose une pause périodique ou une
+  validation par story ; en `--express`, génère tous les plans Must d'affilée.
 - Ignore les stories déjà planifiées (reprise).
 
 ## Phase 4bis — Chiffrage (optionnel)
-Si je le souhaite (propose-le), délègue à l'agent **chiffrage** (entrée : `backlog/` + `comprehension.md`
-+ `docs/`) → `projets/<slug>/chiffrage/chiffrage.md` (charge, TCO, planning, roadmap + GANTT Mermaid).
+Si je le souhaite (propose-le), délègue à l'agent **chiffrage** (entrée : `backlog/` +
+`cadrage/comprehension.md` + `docs/`) → écrit `chiffrage/chiffrage.md` (charge, TCO, planning,
+roadmap + GANTT Mermaid).
 
 ## Phase 5 — Récapitulatif
-Présente l'arborescence finale de `projets/<slug>/`, l'état de chaque phase, les hypothèses et
-lacunes bloquantes restantes (notamment RGPD/AIPD), et **affiche le `docs/PROMPT-DEMARRAGE.md`**
-prêt à coller dans une nouvelle session Claude Code pour démarrer l'implémentation.
+Présente l'arborescence finale (`cadrage/`, `backlog/`, `docs/`, `plans/`), l'état de chaque
+phase, les hypothèses et lacunes bloquantes restantes (notamment RGPD/AIPD), et **affiche le
+`docs/PROMPT-DEMARRAGE.md`**. Rappelle que l'implémentation peut démarrer **dans ce même repo**
+en suivant ce prompt (les `docs/*`, `backlog/`, `plans/` sont déjà en place).
 
-Propose enfin, en options séparées (actions réelles, sur demande) : un **audit RGPD**
-(`/audit-rgpd`), un **contrôle qualité** (`/verifier-cadrage`), la génération des **artefacts
-d'infra** (`/generer-infra`), et la **publication dans un GitHub Project** (`/publier-github-project`).
+Propose enfin, en options séparées (actions réelles, sur demande) : **audit RGPD** (`/audit-rgpd`),
+**contrôle qualité** (`/verifier-cadrage`), **artefacts d'infra** (`/generer-infra`), et
+**publication GitHub Project** (`/publier-github-project`).

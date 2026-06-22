@@ -34,7 +34,7 @@ Architecture/intégrations/réversibilité, 7) Conformité métier et réglement
 Organisation/budget/pilotage, 9) Grille de complétude.
 
 Si l'entrée est un `.docx`, convertis-la d'abord :
-`pwsh ./scripts/Convert-Docx.ps1 -Path "<chemin.docx>" -OutFile "./analyses/_extrait.md"`
+`pwsh ./scripts/Convert-Docx.ps1 -Path "<chemin.docx>" -OutFile "./cadrage/_extrait.md"`
 puis lis le `.md` produit.
 
 # Méthode (rigueur avant tout)
